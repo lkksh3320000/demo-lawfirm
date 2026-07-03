@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI草稿審核介面（後台demo） — 網頁模擬 v2</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <h1>曹律師後台（demo）</h1>
+    <p style="font-size:0.78rem; color:#93a0b3;">僅曹律師帳號可登入（示意）</p>
+    <nav class="mt-lg">
+      <a href="draft-review.html" class="active">📝 AI草稿審核</a>
+      <a href="#" onclick="alert('會員/Token額度管理後台為Phase3規劃，本版模擬先不做，見前次討論決議'); return false;">👤 會員管理（Phase 3，未做）</a>
+      <a href="#" onclick="alert('聯絡表單/諮詢紀錄後台，v2再規劃'); return false;">📩 諮詢表單紀錄（v2規劃）</a>
+      <a href="../index.html">← 回前台首頁</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h2 class="mt-0">AI 草稿審核</h2>
+        <p class="text-muted" style="font-size:0.88rem;">流程對應 PG 文件第四章：AI 只能 create_draft／list_pending_drafts，publish_draft 僅本頁按鈕可觸發，AI 無法呼叫。</p>
+      </div>
+      <span class="badge">Vincent／曹律師 demo 帳號</span>
+    </div>
+
+    <p class="placeholder-note">⚠ 這是純前端demo：草稿清單為寫死假資料，「核准／退回／發布」只會改變畫面上的狀態，不會真的寫入資料庫或Git，重新整理頁面會還原成初始資料。</p>
+
+    <div class="grid" style="grid-template-columns: 1fr 1.4fr; gap:24px; align-items:start;">
+      <div>
+        <h3>待處理清單</h3>
+        <div class="draft-list" id="draft-list"></div>
+      </div>
+
+      <div id="editor-panel" class="editor-panel" style="display:none;">
+        <h3 id="draft-detail-title" class="mt-0">—</h3>
+        <p class="text-muted" id="draft-detail-meta" style="font-size:0.85rem;">—</p>
+        <textarea id="draft-detail-body"></textarea>
+
+        <div class="editor-actions">
+          <button id="btn-approve" class="btn btn--primary btn--sm">✓ 核准（含修改內容）</button>
+          <button id="btn-reject" class="btn btn--outline btn--sm">✕ 退回</button>
+          <button id="btn-publish" class="btn btn--gold btn--sm" disabled>🚀 發布至正式網站</button>
+          <span class="lock-note">🔒 發布按鈕僅核准後才會啟用，且僅此後台介面可觸發，AI無此權限</span>
+        </div>
+
+        <div class="audit-log">
+          <h4>操作紀錄（Audit Log demo）</h4>
+          <ul id="audit-log"></ul>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
