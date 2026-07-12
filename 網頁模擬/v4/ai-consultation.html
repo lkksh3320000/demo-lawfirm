@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI法律諮詢｜曹孟哲律師事務所 — 網頁模擬 v4・Phase3暫存未連結</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="nav__brand" href="index.html">曹孟哲<span>律師事務所</span></a>
+    <ul class="nav__links">
+      <li><a href="index.html">首頁</a></li>
+      <li><a href="about.html">關於曹律師</a></li>
+      <li><a href="services.html">專業服務</a></li>
+      <li><a href="news.html">最新消息</a></li>
+      <li><a href="legal-hub.html">法律知識站</a></li>
+      <li><a href="ai-consultation.html" class="active">AI法律諮詢</a></li>
+      <li><a href="membership.html">會員專區</a></li>
+    </ul>
+    <div class="nav__cta">
+      <a href="index.html#contact" class="btn btn--gold btn--sm">預約諮詢</a>
+      <button class="nav__toggle" aria-label="開啟選單">☰</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="section">
+    <div class="container">
+      <span class="badge badge--phase">Phase 3</span>
+      <h1>AI 法律諮詢</h1>
+      <p class="text-muted">知識庫僅來自曹律師已公開發布的文章（RAG），不綁定任何真實案件（PM文件5.2節決議）。這是純前端demo，回覆為寫死的示範文字，沒有接真實AI。</p>
+
+      <div class="disclaimer mt-lg">本功能提供之回覆僅供一般參考，不構成正式法律意見。若涉及您的具體案件細節，系統將建議您預約正式諮詢。</div>
+
+      <div class="grid grid--2 mt-lg" style="align-items:start;">
+        <div class="chat-window">
+          <div class="chat-window__header">
+            <strong>AI 法律問答（demo）</strong>
+            <span class="chat-window__quota" id="chat-quota" data-remaining="3">今日剩餘額度：3 則</span>
+          </div>
+          <div class="chat-window__body" id="chat-body">
+            <div class="chat-bubble chat-bubble--ai">您好，我是曹孟哲律師事務所的AI法律諮詢助手。請問想了解哪方面的一般法律問題？（範例：可以輸入「共有物分割是什麼」或包含「我的案子」試看看導向預約流程）</div>
+          </div>
+          <form id="chat-form" class="chat-window__input">
+            <input type="text" id="chat-input" placeholder="輸入您的問題…" autocomplete="off">
+            <button type="submit" class="btn btn--primary btn--sm">送出</button>
+          </form>
+        </div>
+
+        <div>
+          <h3>會員等級與額度（demo資料）</h3>
+          <p class="text-muted" style="font-size:0.9rem;">實際額度邏輯見 PG 文件第五章 Token 額度規範，此處僅為視覺示意。</p>
+          <ul class="info-list">
+            <li><span class="dot">•</span> 免費會員：每日 3 則</li>
+            <li><span class="dot">•</span> 貢獻會員：依貢獻分數提升額度</li>
+            <li><span class="dot">•</span> 付費會員：額度最高</li>
+          </ul>
+          <a href="membership.html" class="btn btn--outline btn--block mt-lg">查看會員方案 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>曹孟哲律師事務所</h4>
+        <p style="font-size:0.88rem;">地址：〔待補：執業登記地址〕<br>電話：〔待補：聯絡電話〕<br>電子郵件：〔待補：聯絡信箱〕</p>
+      </div>
+      <div>
+        <h4>快速連結</h4>
+        <p style="font-size:0.88rem;">
+          <a href="index.html">首頁</a><br>
+          <a href="about.html">關於曹律師</a><br>
+          <a href="services.html">專業服務</a><br>
+          <a href="legal-hub.html">法律知識站</a>
+        </p>
+      </div>
+      <div>
+        <h4>提醒事項</h4>
+        <p class="disclaimer">網站內容僅供一般參考，不構成正式法律意見。AI 法律諮詢回覆不得作為訴訟依據，正式個案請預約諮詢。</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 曹孟哲律師事務所 — 網頁模擬 v4・Phase3暫存未連結，僅供內部討論使用</span>
+      <a href="admin/draft-review.html">系統內部：AI草稿審核 demo</a>
+    </div>
+  </div>
+</footer>
+
+<script sr
