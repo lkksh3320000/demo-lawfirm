@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Synology DS925+ 安裝設定教學</title>
+<style>
+  :root{
+    --ink:#16232f;
+    --ink-soft:#4a5b6b;
+    --bg:#f6f8fa;
+    --card:#ffffff;
+    --line:#dde5ec;
+    --accent:#0a5c8c;
+    --accent-soft:#e7f1f7;
+    --amber:#8a5a12;
+    --amber-bg:#fdf3e2;
+    --green:#1f7a52;
+    --green-bg:#e9f6ef;
+    --mono:#0b3b57;
+    --mono-bg:#eef4f8;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans CJK TC","Microsoft JhengHei",Roboto,sans-serif;
+    line-height:1.7;
+    font-size:16px;
+    padding-bottom:60px;
+  }
+  code, .mono{
+    font-family:"SFMono-Regular",Menlo,Consolas,"Courier New",monospace;
+    background:var(--mono-bg);
+    color:var(--mono);
+    padding:2px 7px;
+    border-radius:5px;
+    font-size:0.92em;
+    word-break:break-all;
+  }
+  a{ color:var(--accent); }
+
+  /* ---- Header ---- */
+  header.top{
+    position:sticky; top:0; z-index:50;
+    background:linear-gradient(180deg, var(--ink) 0%, #1c3244 100%);
+    color:#fff;
+    padding:14px 18px 12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+  }
+  header.top h1{
+    margin:0 0 2px;
+    font-size:1.15rem;
+    letter-spacing:.2px;
+  }
+  header.top p{
+    margin:0;
+    font-size:.8rem;
+    color:#b7c8d6;
+  }
+  .progress-track{
+    height:4px; background:rgba(255,255,255,.18);
+    border-radius:4px; margin-top:10px; overflow:hidden;
+  }
+  .progress-bar{
+    height:100%; width:0%;
+    background:linear-gradient(90deg,#3fa9dc,#7fd1ae);
+    transition:width .15s ease-out;
+  }
+
+  /* ---- Quick nav ---- */
+  nav.quicknav{
+    display:flex; gap:8px; overflow-x:auto;
+    padding:10px 14px; background:#0f2231;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  nav.quicknav::-webkit-scrollbar{ display:none; }
+  nav.quicknav a{
+    flex:0 0 auto;
+    color:#dceaf5; text-decoration:none;
+    background:rgba(255,255,255,.08);
+    padding:6px 12px; border-radius:20px;
+    font-size:.78rem; white-space:nowrap;
+    border:1px solid rgba(255,255,255,.08);
+  }
+  nav.quicknav a:active{ background:var(--accent); }
+
+  main{ max-width:720px; margin:0 auto; padding:18px 16px 0; }
+
+  /* ---- Intro / requirements card ---- */
+  .req-card{
+    background:var(--card); border:1px solid var(--line);
+    border-radius:var(--radius); padding:16px 18px; margin-bottom:20px;
+  }
+  .req-card h2{ margin-top:0; font-size:1rem; color:var(--accent); }
+  .req-card ul{ margin:8px 0 0; padding-left:20px; font-size:.93rem; }
+  .req-card li{ margin-bottom:4px; }
+
+  /* ---- Sections as accordions ---- */
+  details.phase{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    margin-bottom:14px;
+    overflow:hidden;
+    scroll-margin-top:120px;
+  }
+  details.phase[open]{ box-shadow:0 4px 14px rgba(15,35,49,.06); }
+  details.phase summary{
+    list-style:none;
+    cursor:pointer;
+    padding:14px 16px;
+    display:flex; align-items:center; gap:12px;
+    font-weight:600;
+    font-size:.98rem;
+  }
+  details.phase summary::-webkit-details-marker{ display:none; }
+  details.phase summary .num{
+    flex:0 0 auto;
+    width:30px; height:30px; border-radius:50%;
+    background:var(--accent-soft); color:var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.85rem; font-weight:700;
+  }
+  details.phase summary .chev{
+    margin-left:auto; color:var(--ink-soft);
+    transition:transform .2s ease;
+    font-size:.85rem;
+  }
+  details.phase[open] summary .chev{ transform:rotate(180deg); }
+  .phase-body{ padding:0 18px 18px; font-size:.94rem; }
+  .phase-body ol, .phase-body ul{ padding-left:22px; margin:8px 0; }
+  .phase-body li{ margin-bottom:7px; }
+
+  .callout{
+    border-radius:9px; padding:10px 14px; margin:12px 0;
+    font-size:.88rem; line-height:1.6;
+  }
+  .callout.warn{ background:var(--amber-bg); color:var(--amber); border:1px solid #f0dcae; }
+  .callout.tip{ background:var(--green-bg); color:var(--green); border:1px solid #c7e8d6; }
+  .callout.ref{ background:var(--accent-soft); color:#0b3f5c; border:1px solid #cfe3ee; font-size:.83rem;}
+  .callout.ref a{ color:#0b3f5c; font-weight:600; }
+
+  .checklist{ list-style:none; padding-left:0; }
+  .checklist li{
+    display:flex; align-items:flex-start; gap:9px;
+    padding:6px 0; border-bottom:1px dashed var(--line);
+    font-size:.92rem;
+  }
+  .checklist li:last-child{ border-bottom:none; }
+  .checklist input[type=checkbox]{
+    margin-top:3px; width:18px; height:18px; accent-color:var(--accent); flex:0 0 auto;
+  }
+
+  h3.sub{ font-size:.9rem; color:var(--accent); margin:16px 0 6px; }
+
+  .qa-item{ margin-bottom:14px; }
+  .qa-q{ font-weight:700; color:var(--accent); font-size:.93rem; }
+  .qa-a{ font-size:.9rem; color:var(--ink-soft); margin-top:3px; }
+
+  table.reftable{ width:100%; border-collapse:collapse; font-size:.82rem; }
+  table.reftable td{ padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.reftable td:first-child{ font-weight:600; white-space:nowrap; padding-right:10px; color:var(--ink); }
+  table.reftable a{ word-break:break-all; }
+
+  .footer-note{
+    background:var(--ink); color:#dceaf5;
+    border-radius:var(--radius);
+    padding:16px 18px; margin:22px 0 0;
+    font-size:.88rem; line-height:1.6;
+  }
+
+  .topbtn{
+    display:block; text-align:center; margin:26px auto 0;
+    width:fit-content; padding:8px 18px;
+    background:var(--accent-soft); color:var(--accent);
+    border-radius:20px; text-decoration:none; font-size:.82rem;
+  }
+
+  @media (min-width:700px){
+    body{ font-size:16.5px; }
+    header.top{ padding:18px 26px 14px; }
+    main{ padding:22px 0 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top" id="top">
+  <h1>Synology DS925+ 開箱到上線教學</h1>
+  <p>新手友善・一步步引導・4bay NAS + UPS + RAID1</p>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</header>
+
+<nav class="quicknav">
+  <a href="#req">需求</a>
+  <a href="#p1">1.開箱</a>
+  <a href="#p2">2.硬碟</a>
+  <a href="#p3">3.接線</a>
+  <a href="#p4">4.固定IP</a>
+  <a href="#p5">5.DSM</a>
+  <a href="#p6">6.RAID1</a>
+  <a href="#p7">7.帳號</a>
+  <a href="#p8">8.Windows</a>
+  <a href="#p9">9.QuickConnect</a>
+  <a href="#p10">10.App</a>
+  <a href="#p11">11.UPS</a>
+  <a href="#p12">12.資安</a>
+  <a href="#p13">13.驗收</a>
+  <a href="#p14">14.QA</a>
+  <a href="#p15">15.出處</a>
+</nav>
+
+<main>
+
+  <div class="req-card" id="req">
+    <h2>📋 本次需求整理</h2>
+    <ul>
+      <li>到貨設備：Synology DS925+（4-bay NAS）＋ UPS ＋ 2 顆 6TB 硬碟</li>
+      <li>現有網路：中華電信 HiNet 光世代 ONT/數據機 → 自己的路由器</li>
+      <li>IP 規劃：未來可能對外開放服務 → 用路由器 <b>DHCP 保留</b> 方式固定內網 IP（不改 NAS 本身設定，較安全）</li>
+      <li>QuickConnect：要使用，但 ID 用隨機難猜字串加強安全性</li>
+      <li>使用情境：筆電（Windows）、平板、手機都要能存取</li>
+      <li>完成範圍：硬碟安裝、網路連結、DSM 初始化、RAID1、帳號密碼與資料夾、內外網資料夾分享、UPS 設定、基礎資安強化</li>
+    </ul>
+  </div>
+
+  <!-- 1 -->
+  <details class="phase" id="p1" open>
+    <summary><span class="num">1</span> 開箱與內容物確認 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <p>打開 momo 箱子後，先確認以下物品是否齊全，再開始動手：</p>
+      <ul class="checklist">
+        <li><input type="checkbox">DS925+ 主機</li>
+        <li><input type="checkbox">電源線 1 條</li>
+        <li><input type="checkbox">網路線（RJ-45）通常 2 條</li>
+        <li><input type="checkbox">硬碟托盤鑰匙（若為上鎖款式）</li>
+        <li><input type="checkbox">快速安裝指南</li>
+        <li><input type="checkbox">UPS 主機、UPS 電源線、UPS 對 NAS 的 USB 訊號線</li>
+        <li><input type="checkbox">2 顆 6TB 硬碟（另購，非原廠隨附）</li>
+      </ul>
+      <div class="callout warn">若有缺件，先聯絡 momo 客服處理，不要急著裝機。</div>
+    </div>
+  </details>
+
+  <!-- 2 -->
+  <details class="phase" id="p2">
+    <summary><span class="num">2</span> 硬碟安裝 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <ol>
+        <li>NAS 完全斷電（尚未接電源線，維持這個狀態）。</li>
+        <li>按住硬碟托盤按鈕/卡榫，向外拉出空托盤（先用 Bay 1、Bay 2）。</li>
+        <li>3.5 吋硬碟：拆開托盤兩側固定面板 → 放入硬碟 → 面板裝回卡緊（<b>免螺絲</b>）。</li>
+        <li>2.5 吋硬碟才需要用附贈小螺絲鎖在托盤上。</li>
+        <li>裝好硬碟的托盤直線推入機身插槽，推到底聽到「喀」一聲，代表卡緊到位。</li>
+        <li>Bay 3、Bay 4 先保留空著（未來擴充用）。</li>
+      </ol>
+      <div class="callout warn">⚠️ 若硬碟裡本來就有資料，安裝進 NAS 建立儲存空間時<b>會被格式化清空</b>，請確保是全新或已清空的硬碟。</div>
+      <div class="callout ref">📖 出處：<a href="https://kb.synology.com/zh-tw/HIGs/DS925p_HIG/2" target="_blank">DS925+ 產品使用手冊－硬體元件安裝（Synology 官方）</a></div>
+    </div>
+  </details>
+
+  <!-- 3 -->
+  <details class="phase" id="p3">
+    <summary><span class="num">3</span> 接線（電源／網路／UPS） <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <ol>
+        <li>UPS 先上線：電源線插到牆壁插座 → 開啟電源開關 → 確認面板顯示「有市電輸入」。</li>
+        <li>NAS 電源線 → 插到 UPS 標示「電池供電＋防突波」的插座（不是每個插座都有電池支援）。</li>
+        <li>網路線：一端接 NAS 背後 LAN 孔，另一端接你<b>自己路由器</b>的 LAN port（不要接到 ONT）。</li>
+        <li>UPS 訊號線（USB）：一端接 UPS，另一端接 NAS 背後 USB 埠。</li>
+        <li>確認接妥後，按下 NAS 電源鍵開機，等待約 1–3 分鐘至指示燈穩定。</li>
+      </ol>
+    </div>
+  </details>
+
+  <!-- 4 -->
+  <details class="phase" id="p4">
+    <summary><span class="num">4</span> 路由器端設定固定 IP（DHCP 保留） <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <p>目的：讓 NAS 每次開機都拿到同一個內網 IP，未來對外開放服務時不會因 IP 變動而失效，這是<b>風險最低</b>的做法，不需更動 NAS 本身網路設定。</p>
+      <ol>
+        <li>NAS 開機後會先跟路由器要一個「臨時」動態 IP。</li>
+        <li>瀏覽器登入路由器管理介面（通常為 <code>192.168.1.1</code> 或 <code>192.168.0.1</code>）。</li>
+        <li>找到「DHCP 用戶端清單 / Client List」，找到裝置名稱類似 <code>DiskStation</code> 的項目。</li>
+        <li>記下這台 NAS 的 <b>MAC 位址</b>。</li>
+        <li>到「DHCP 保留 / Address Reservation」頁面，新增一筆：MAC 填入剛剛記下的、指定 IP（例如 <code>192.168.1.50</code>）。</li>
+        <li>儲存後<b>重新啟動 NAS 一次</b>，確認拿到綁定的固定 IP。</li>
+      </ol>
+      <div class="callout tip">💡 之後教學中的「NAS 固定 IP」都以 <code>192.168.1.50</code> 為範例，請換成你實際綁定的 IP。</div>
+      <div class="callout warn">若路由器介面找不到「DHCP 保留」選項，請先停在這一步，告知路由器品牌型號，改用 NAS 端手動設定靜態 IP 的替代方案。</div>
+    </div>
+  </details>
+
+  <!-- 5 -->
+  <details class="phase" id="p5">
+    <summary><span class="num">5</span> DSM 初始化 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <ol>
+        <li>電腦（Windows）需連上跟 NAS 同一個區網。</li>
+        <li>瀏覽器輸入 <code>find.synology.com</code>，或下載安裝 Synology Assistant 工具搜尋。</li>
+        <li>找到 DS925+ 後點選「設定」。</li>
+        <li>選擇「線上安裝建議版本 DSM」（過程中自動重開機 1–2 次，<b>中途絕對不要拔電源</b>）。</li>
+        <li>建立管理員帳號：帳號名稱自訂（不要用預設 <code>admin</code>），密碼 12 碼以上並混合大小寫、數字、符號。</li>
+        <li>幫 NAS 命名，例如 <code>HomeNAS</code>。</li>
+        <li>QuickConnect 設定畫面先「略過」，第 9 節再回來做強化設定。</li>
+      </ol>
+      <div class="callout ref">📖 出處：<a href="https://www.synology.com/zh-tw/support/download/DS925+" target="_blank">Synology 產品下載中心－DS925+ DSM 韌體與文件</a></div>
+    </div>
+  </details>
+
+  <!-- 6 -->
+  <details class="phase" id="p6">
+    <summary><span class="num">6</span> 建立 Storage Pool + RAID1 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <ol>
+        <li>開啟「Storage Manager（儲存空間管理員）」。</li>
+        <li>左側選「儲存空間集區」→「新增」。</li>
+        <li>選擇「自訂」→ RAID 類型選 <b>RAID1</b>。</li>
+        <li>勾選 2 顆 6TB 硬碟 → 下一步 → 確認 → 套用。</li>
+        <li>系統跑「同位檢查（Parity Check）」，可能需數小時，<b>背景執行，NAS 仍可正常使用</b>。</li>
+        <li>建立「磁碟區（Volume）」，檔案系統選 <b>Btrfs</b>（支援快照、自我修復檢查）。</li>
+        <li>完成後應顯示「儲存空間集區：正常」、「磁碟區：正常」。</li>
+      </ol>
+      <div class="callout ref">📖 出處：
+        <a href="https://kb.synology.com/zh-tw/DSM/help/DSM/StorageManager/storage_pool_create_storage_pool" target="_blank">建立儲存集區</a> ／
+        <a href="https://kb.synology.com/zh-tw/DSM/tutorial/How_to_create_and_manage_RAID_volumes_on_the_DiskStation" target="_blank">建立並管理 RAID 儲存空間</a>
+      </div>
+    </div>
+  </details>
+
+  <!-- 7 -->
+  <details class="phase" id="p7">
+    <summary><span class="num">7</span> 使用者帳號與共用資料夾 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <ol>
+        <li>「控制台 → 使用者與群組」→ 新增使用者：建立日常使用帳號（管理員帳號只在做系統設定時使用）。</li>
+        <li>「控制台 → 共用資料夾」→ 新增資料夾，例如 <code>Public</code>（可共用）、<code>Private</code>（個人資料）。</li>
+        <li>每個資料夾點選「編輯 → 權限」，逐一設定哪些帳號可以「讀取」或「讀寫」。</li>
+      </ol>
+    </div>
+  </details>
+
+  <!-- 8 -->
+  <details class="phase" id="p8">
+    <summary><span class="num">8</span> Windows 筆電內網存取 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <ol>
+        <li>開啟檔案總管，網址列輸入 <code>\\192.168.1.50</code>（換成實際固定 IP）。</li>
+        <li>輸入 NAS 使用者帳號密碼。</li>
+        <li>右鍵點選資料夾 →「對應網路磁碟機」→ 選磁碟代號（如 <code>Z:</code>）→ 勾選「登入時重新連線」。</li>
+      </ol>
+    </div>
+  </details>
+
+  <!-- 9 -->
+  <details class="phase" id="p9">
+    <summary><span class="num">9</span> QuickConnect 外網存取（強化別名） <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <p>QuickConnect 讓你在外面也能連回家裡的 NAS，不需要在路由器開 Port Forward，相對安全。</p>
+      <ol>
+        <li>「控制台 → QuickConnect」→ 勾選「啟用 QuickConnect」。</li>
+        <li>使用現有 Synology 帳戶登入，或註冊新帳戶。</li>
+        <li>自訂 QuickConnect ID：
+          <ul>
+            <li>❌ 不要用姓名、公司名稱、NAS 用途（例如 <code>chou-home-nas</code>）</li>
+            <li>✅ 改用無意義隨機英數組合，例如 <code>x7k2mq9n4</code>（10 碼以上，混大小寫＋數字）</li>
+            <li>規則：只能用英文字母、數字、連字號「-」，須以字母開頭</li>
+          </ul>
+        </li>
+        <li>套用後，從外部瀏覽器輸入 <code>https://你的ID.quickconnect.to</code> 即可連線登入。</li>
+        <li>進階選項（「控制台 → QuickConnect → 進階」）：<b>不要</b>勾選「自動建立連接埠轉送規則」。</li>
+      </ol>
+      <div class="callout warn">未來若要正式對外開放服務，建議屆時另外規劃固定 DDNS＋反向代理＋SSL 憑證，或改用 VPN 方式進入內網，這牽涉防火牆規則變更，屬於進階項目，不建議現在貿然開 Port。</div>
+      <div class="callout ref">📖 出處：<a href="https://kb.synology.com/zh-tw/DSM/help/DSM/AdminCenter/connection_quickconnect?version=7" target="_blank">QuickConnect（Synology 知識中心）</a></div>
+    </div>
+  </details>
+
+  <!-- 10 -->
+  <details class="phase" id="p10">
+    <summary><span class="num">10</span> 手機／平板 App 設定 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <h3 class="sub">iOS（iPhone / iPad）</h3>
+      <ol>
+        <li>App Store 搜尋安裝：<b>DS file</b></li>
+        <li>開啟 App →「新增伺服器」</li>
+        <li>家中 WiFi（內網）時：輸入固定 IP，例如 <code>192.168.1.50</code></li>
+        <li>外面（外網）時：改選「QuickConnect」，輸入你的 QuickConnect ID</li>
+        <li>輸入 NAS 帳號密碼登入即可瀏覽／上傳／下載</li>
+      </ol>
+      <h3 class="sub">Android（手機/平板）</h3>
+      <ol>
+        <li>Google Play 搜尋安裝：<b>DS file</b></li>
+        <li>步驟同 iOS：新增伺服器 → 內網固定 IP 或 QuickConnect ID → 帳密登入</li>
+      </ol>
+      <h3 class="sub">筆電自動同步（選用）</h3>
+      <ol>
+        <li>Synology 官網下載「Synology Drive Client」安裝在筆電</li>
+        <li>輸入固定 IP 或 QuickConnect ID → 登入 → 選擇要自動同步的資料夾</li>
+      </ol>
+    </div>
+  </details>
+
+  <!-- 11 -->
+  <details class="phase" id="p11">
+    <summary><span class="num">11</span> UPS 設定 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <ol>
+        <li>「控制台 → 硬體與電源 → 不斷電系統」。</li>
+        <li>接線正確時會顯示紅字提醒「不斷電系統已連接」，勾選「啟動不斷電系統支援」。</li>
+        <li>UPS 類型選擇「USB 不斷電系統」。</li>
+        <li>設定「進入安全模式前的等待時間」：家用建議 3–5 分鐘。</li>
+        <li>若要讓其他電腦查詢 UPS 狀態，可勾選「啟用網路不斷電系統伺服器」（進階選用，非必要）。</li>
+        <li>建議做一次<b>斷電模擬測試</b>：手動拔掉市電插頭，確認 NAS 依設定時間安全關機；插回市電後確認能自動開機。</li>
+      </ol>
+      <div class="callout ref">📖 出處：<a href="https://kb.synology.com/zh-tw/DSM/help/DSM/AdminCenter/system_hardware_ups?version=7" target="_blank">不斷電系統（Synology 知識中心）</a></div>
+    </div>
+  </details>
+
+  <!-- 12 -->
+  <details class="phase" id="p12">
+    <summary><span class="num">12</span> 基礎資安強化 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <ol>
+        <li>「控制台 → 更新與還原」→ 確認 DSM 為最新版本。</li>
+        <li>管理員帳號啟用「雙步驟驗證（2FA）」。</li>
+        <li>「控制台 → 安全性 → 帳號」→ 啟用「自動封鎖」。</li>
+        <li>「控制台 → 安全性 → 防火牆」→ 啟用防火牆，只開放必要服務連接埠。</li>
+        <li>執行一次「Security Advisor」健檢，依建議修正紅色/黃色警示項目。</li>
+        <li>停用不需要的服務（FTP、Telnet、SNMP 等保持關閉）。</li>
+      </ol>
+      <div class="callout ref">📖 出處：<a href="https://kb.synology.com/zh-tw/DSM/help/DSM/SecurityScan/securityscan_desc" target="_blank">Security Advisor（Synology 知識中心）</a></div>
+    </div>
+  </details>
+
+  <!-- 13 -->
+  <details class="phase" id="p13">
+    <summary><span class="num">13</span> 完工驗收清單 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <ul class="checklist">
+        <li><input type="checkbox">路由器 DHCP 清單顯示 NAS IP 固定，重開機後 IP 不變</li>
+        <li><input type="checkbox">Storage Manager 顯示「正常」，RAID1 容量約 6TB 可用</li>
+        <li><input type="checkbox">Windows 筆電可透過固定 IP 正常存取共用資料夾</li>
+        <li><input type="checkbox">手機（切到行動網路）用 QuickConnect 隨機別名登入成功</li>
+        <li><input type="checkbox">平板同樣測試成功</li>
+        <li><input type="checkbox">「不斷電系統」頁面顯示 UPS 已連接、狀態正常</li>
+        <li><input type="checkbox">斷電模擬測試：安全關機＋市電恢復後自動開機</li>
+        <li><input type="checkbox">Security Advisor 檢查無高風險項目</li>
+        <li><input type="checkbox">管理員帳號已開啟雙步驟驗證</li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- 14 -->
+  <details class="phase" id="p14">
+    <summary><span class="num">14</span> 延伸 QA <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <div class="qa-item">
+        <div class="qa-q">Q1：只裝 2 顆硬碟做 RAID1，之後想擴充怎麼辦？</div>
+        <div class="qa-a">之後可直接在 Bay 3、Bay 4 插入新硬碟，於 Storage Manager 建立新的儲存空間集區，與現有 RAID1 分開管理、互不影響。</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q">Q2：RAID1 是不是就不用備份了？</div>
+        <div class="qa-a">不是。RAID1 只防「單顆硬碟故障」，無法防範誤刪、勒索病毒、天災。建議日後另外規劃 Hyper Backup 備份到外接硬碟或雲端。</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q">Q3：QuickConnect 會不會比較慢？</div>
+        <div class="qa-a">走中繼服務（Relay）確實會較慢，換取的是不用開 Port、曝露面較小。</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q">Q4：忘記固定 IP 或 QuickConnect ID 怎麼辦？</div>
+        <div class="qa-a">固定 IP 查路由器 DHCP 保留清單；QuickConnect ID 登入 account.synology.com 查看已註冊裝置。</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q">Q5：DSM 更新會不會把資料洗掉？</div>
+        <div class="qa-a">一般不會清空 Volume 內容，但建議更新前先確認沒有重要作業進行中，並定期備份。</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q">Q6：手機 App 一定要用 QuickConnect 嗎？</div>
+        <div class="qa-a">不一定。家中 WiFi 可直接用固定 IP，速度較快，只有外出才需要 QuickConnect。</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q">Q7：以後真的要對外開放給客戶用，現在設定夠嗎？</div>
+        <div class="qa-a">目前屬家用等級安全做法。正式對外建議屆時規劃固定 DDNS、反向代理、SSL 憑證或 VPN，並重新檢視防火牆規則。</div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 15 -->
+  <details class="phase" id="p15">
+    <summary><span class="num">15</span> 官方參考資料出處 <span class="chev">▾</span></summary>
+    <div class="phase-body">
+      <table class="reftable">
+        <tr><td>硬體元件安裝</td><td><a href="https://kb.synology.com/zh-tw/HIGs/DS925p_HIG/2" target="_blank">kb.synology.com/.../DS925p_HIG/2</a></td></tr>
+        <tr><td>DSM 下載中心</td><td><a href="https://www.synology.com/zh-tw/support/download/DS925+" target="_blank">synology.com/.../download/DS925+</a></td></tr>
+        <tr><td>建立儲存集區</td><td><a href="https://kb.synology.com/zh-tw/DSM/help/DSM/StorageManager/storage_pool_create_storage_pool" target="_blank">kb.synology.com（Storage Manager）</a></td></tr>
+        <tr><td>RAID 建立與管理</td><td><a href="https://kb.synology.com/zh-tw/DSM/tutorial/How_to_create_and_manage_RAID_volumes_on_the_DiskStation" target="_blank">kb.synology.com（RAID Tutorial）</a></td></tr>
+        <tr><td>QuickConnect</td><td><a href="https://kb.synology.com/zh-tw/DSM/help/DSM/AdminCenter/connection_quickconnect?version=7" target="_blank">kb.synology.com（QuickConnect）</a></td></tr>
+        <tr><td>不斷電系統設定</td><td><a href="https://kb.synology.com/zh-tw/DSM/help/DSM/AdminCenter/system_hardware_ups?version=7" target="_blank">kb.synology.com（UPS）</a></td></tr>
+        <tr><td>Security Advisor</td><td><a href="https://kb.synology.com/zh-tw/DSM/help/DSM/SecurityScan/securityscan_desc" target="_blank">kb.synology.com（Security Advisor）</a></td></tr>
+        <tr><td>DS925+ 官方頁面</td><td><a href="https://www.synology.com/en-us/products/DS925+" target="_blank">synology.com/en-us/products/DS925+</a></td></tr>
+      </table>
+    </div>
+  </details>
+
+  <div class="footer-note">
+    📌 建議操作順序：<b>第 2–3 節（硬體安裝接線）</b>先動手完成 → 回報結果 → 再進行第 4 節（固定 IP）以後的步驟。分階段執行比較不容易出錯，也方便中途排除問題。
+  </div>
+
+  <a class="topbtn" href="#top">↑ 回到頂端</a>
+
+</main>
+
+<script>
+  // 進度條：依頁面捲動位置更新
+  function updateProgress(){
+    var doc = document.documentElement;
+    var scrollTop = doc.scrollTop || document.body.scrollTop;
+    var scrollHeight = (doc.scrollHeight || document.body.scrollHeight) - doc.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    var bar = document.getElementById('progressBar');
+    if(bar){ bar.style.width = pct + '%'; }
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('load', updateProgress);
+
+  // 點擊目錄錨點時，自動展開對應章節
+  document.querySelectorAll('nav.quicknav a').forEach(function(link){
+    link.addEventListener('click', function(){
+      var id = link.getAttribute('href').substring(1);
+      var el = document.getElementById(id);
+      if(el && el.tagName === 'DETAILS'){ el.open = true; }
+    });
+  });
+</script>
+
+</body>
+</html>
